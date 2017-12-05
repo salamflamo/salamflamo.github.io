@@ -3,14 +3,13 @@ var cacheName = 'Money-Management';
 var filesToCache = [
   '/',
   '/index.html',
-  '/favicon.ico',
-  '/script/crud.js',
-  '/script/jquery-3.2.1.min.js',
-  '/script/materialize.min.js',
-  '/script/style.js',
-  '/sw.js',
-  '/style/materialize.min.css',
-  '/style/style.css'
+  '/scripts/crud.js',
+  '/scripts/style.js',
+  '/scripts/jquery-3.2.1.min.js',
+  '/scripts/materialize.min.js',
+  '/scripts/style.js',
+  '/styles/materialize.min.css',
+  '/styles/style.css'
 ];
 
 self.addEventListener('install', function(e) {
