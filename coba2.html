@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <script type="text/javascript" src="script/jquery-3.2.1.min.js"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <title>Coba FBDB</title>
+  <style media="screen">
+    .center {
+      top: 50%;
+      left: 50%;
+    }
+  </style>
+
+  <script src="https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyBphdc7pLzGlSAMr7Zi7da4ohwUHmfg1cw",
+      authDomain: "mon-man.firebaseapp.com",
+      databaseURL: "https://mon-man.firebaseio.com",
+      projectId: "mon-man",
+      storageBucket: "mon-man.appspot.com",
+      messagingSenderId: "285185888584"
+    };
+    firebase.initializeApp(config);
+  </script>
+</head>
+
+<body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbarr" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand">FBDB</a>
+      </div>
+      <div class="collapse navbar-collapse" id="navbarr">
+        <ul class="nav navbar-nav">
+          <li><a href="#">Insert</a></li>
+          <li><a href="#">Table</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3">
+        <h4 class="heading">Contoh FBDB</h4>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-horizontal" action="index.html" method="post">
+          <div class="form-group">
+            <label class="col-md-2 control-label">id</label>
+            <div class="col-md-3">
+              <input type="text" name="id" class="form-control" disabled>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2 control-label">Nominal</label>
+            <div class="col-md-3">
+              <input type="number" name="nominal" class="form-control" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2 control-label">Keperluan</label>
+            <div class="col-md-3">
+              <input type="text" name="keperluan" class="form-control" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <input type="hidden" name="tgl" value="">
+            <input type="hidden" name="bln" value="">
+            <input type="hidden" name="th" value="">
+            <input type="hidden" name="jam" value="">
+          </div>
+          <div class="form-actions">
+            <div class="col-lg-3">
+              <div class="pull-right">
+                <div class="button-group">
+                  <button type="button" name="simpan" class="btn btn-success">save</button>
+                  <button type="button" class="btn btn-default" onclick="coba()">coba</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br><br>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-toolbar">
+          <div class="col-lg-3">
+            <div class="pull-right">
+              <button type="button" id="kurang" class="btn btn-sm btn-warning">Kurang</button>
+              <button type="button" id="lebih" class="btn btn-sm btn-primary">Lebih</button>
+            </div>
+          </div>
+        </div>
+        <table class="table table-hover">
+          <thead>
+            <th>Id</th>
+            <th>Nominal</th>
+            <th>Keperluan</th>
+            <th>Disimpan</th>
+            <th>Diperbarui</th>
+            <th>###</th>
+          </thead>
+          <tbody id="tbl-isi">
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+<script type="text/javascript">
+  var fireRef = firebase.database().ref("keluaran/");
+  var isupdate;
+  reload();
+  $(document).ready(function() {
+    var dt = new Date();
+    $('button[name=simpan]').click(function() {
+      var date = dt.getDate() + "-" + dt.getMonth() + "-" + dt.getFullYear() + " " + dt.getHours() + ":" + dt.getMinutes();
+      if (isupdate) {
+        var data = {
+          id: $('input[name=id]').val(),
+          nominal: $('input[name=nominal]').val(),
+          keperluan: $('input[name=keperluan]').val(),
+          updated: date,
+          tgl: parseInt($('input[name=tgl]').val()),
+          bln: parseInt($('input[name=bln]').val()),
+          th: parseInt($('input[name=th]').val()),
+          jam: $('input[name=jam]').val()
+        };
+        var updates = {};
+        updates['/keluaran/' + $('input[name=id]').val()] = data;
+        firebase.database().ref().update(updates);
+        alert("berhasil perbarui");
+        reload();
+        isupdate = false;
+      } else {
+        var uid = firebase.database().ref().child("keluaran").push().key;
+        var data = {
+          id: uid,
+          nominal: $('input[name=nominal]').val(),
+          keperluan: $('input[name=keperluan]').val(),
+          updated: date,
+          tgl: dt.getDate(),
+          bln: dt.getMonth(),
+          th: dt.getFullYear(),
+          jam: dt.getHours() + ":" + dt.getMinutes()
+        };
+        var updates = {};
+        updates['/keluaran/' + uid] = data;
+        firebase.database().ref().update(updates);
+        alert("berhasil simpan");
+        reload();
+      }
+    });
+    var iter = 1;
+    $('#lebih').click(function() {
+      iter++;
+      reload(iter, null, null);
+    });
+    $('#kurang').click(function() {
+      if (iter !== 1) {
+        iter--;
+      }
+      reload(iter, null, null);
+    });
+
+  });
+  ///fungsi-fungsi
+  var globalID = new Array();
+  var allData = new Array();
+
+  function reload(l = 1, bln = 0, th = 0) {
+    allData = [];
+    var allId = new Array();
+    allId = [];
+    $('input').val("");
+    var i = 0;
+    fireRef.limitToLast(3 * l).once('value', function(snapshot) {
+      snapshot.forEach(function(childSnapshot) {
+
+        var childKey = childSnapshot.key;
+        var childData = childSnapshot.val();
+        allId[i] = childKey;
+        allData[i] = {
+          "id": childData.id,
+          "nominal": childData.nominal,
+          "keperluan": childData.keperluan,
+          "tgl": childData.tgl,
+          "bln": childData.bln,
+          "th": childData.th,
+          "jam": childData.jam,
+          "updated": childData.updated
+        };
+        i++;
+      });
+    }).then(function() {
+      globalID = [];
+      globalID = allId;
+      coba();
+    });
+  }
+
+  function perbarui(i) {
+    isupdate = true;
+    $('input[name=id]').val(allData[i].id);
+    $('input[name=nominal]').val(allData[i].nominal);
+    $('input[name=keperluan]').val(allData[i].keperluan);
+    $('input[name=tgl]').val(allData[i].tgl);
+    $('input[name=bln]').val(allData[i].bln);
+    $('input[name=th]').val(allData[i].th);
+    $('input[name=jam]').val(allData[i].jam);
+  }
+
+  function hapus(i) {
+    var hapus = confirm("hapus?");
+    if (hapus) {
+      firebase.database().ref().child("/keluaran/" + globalID[i]).remove();
+      reload();
+    }
+    if (i == 0 || i == null) {
+      window.location.reload();
+    }
+  }
+
+  function coba() {
+    var html;
+    for (var i = allData.length - 1; i >= 0; i--) {
+      html += '<tr>' +
+        '<td>' + allData[i].id + '</td>' +
+        '<td>' + allData[i].nominal + '</td>' +
+        '<td>' + allData[i].keperluan + '</td>' +
+        '<td>' + allData[i].tgl + "-" + allData[i].bln + "-" + allData[i].th + " " + allData[i].jam + '</td>' +
+        '<td>' + allData[i].updated + '</td>' +
+        '<td>' +
+        '<div class="button-group">' +
+        '<button type="button" class="btn btn-sm btn-default"' +
+        'onclick="perbarui(' + i + ')" >' +
+        '<i class="fa fa-edit"></i>' +
+        '</button>' +
+        '<button type="button" class="btn btn-sm btn-danger"  ' +
+        ' onclick="hapus(' + i + ')">' +
+        '<i class="fa fa-trash"></i>' +
+        '</button>' +
+        '</div>' +
+        '</td>' +
+        '</tr>';
+    }
+    $('#tbl-isi').html(html);
+  }
+</script>
+
+</html>

@@ -6,42 +6,40 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <link rel="canonical" href="https://pwa.warungtegal.id/">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <script type="text/javascript" src="scripts/jquery-3.2.1.min.js"></script>
-  <script type="text/javascript" src="scripts/style.js"></script>
-  <link rel="stylesheet" href="styles/materialize.min.css">
-  <link rel="stylesheet" href="styles/style.css">
-  <script type="text/javascript" src="scripts/materialize.min.js"></script>
-  <script type="text/javascript" src="scripts/crud.js" async></script>
-  <!-- ini untuk apple -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Mon-Man">
-  <link rel="apple-touch-icon" href="icons/icon-152x152.png">
-  <!-- this is for windows -->
-  <meta name="msapplication-TileImage" content="icons/icon-144x144.png">
-  <meta name="msapplication-TileColor" content="#2F3BA2">
+  <script src="https://www.gstatic.com/firebasejs/4.7.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.7.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.7.0/firebase-auth.js"></script>
+  <script type="text/javascript" src="script/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="script/style.js"></script>
+  <link rel="stylesheet" href="style/materialize.min.css">
+  <link rel="stylesheet" href="style/style.css">
+  <script type="text/javascript" src="script/materialize.min.js"></script>
+  <script type="text/javascript" src="script/initialize.js"></script>
+  <script type="text/javascript" src="script/beauty.js" async></script>
+  <script type="text/javascript" src="script/app.js"></script>
   <link rel="shortcut icon" href="favicon.ico" />
-  <title>Money Management</title>
   <link rel="manifest" href="/manifest.json">
+  <title>Money Management</title>
 </head>
 
 <body>
   <nav>
-    <div class="nav-wrapper blue">
-      <a href="#!" class="brand-logo">Logo</a>
+    <div class="nav-wrapper teal accent-4">
+      <a class="brand-logo"><img style="padding-top:4px;padding-left:4px" src="logo.png"></a>
       <ul class="right hide-on-med-and-down">
-        <li><a onclick="dash()">Dashboard</a></li>
-        <li><a onclick="pem()">Pemasukan</a></li>
-        <li><a onclick="peng()">Pengeluaran</a></li>
+        <li><a id="a">Dashboard</a></li>
+        <li><a id="b">Pemasukan</a></li>
+        <li><a id="c">Pengeluaran</a></li>
+        <li><a id="d">Hutang</a></li>
       </ul>
-      <a href="#" data-activates="mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+      <a href="#" data-activates="mobile" class="button-collapse hidden"><i class="material-icons">menu</i></a>
       <ul class="side-nav" id="mobile">
         <li>
           <div class="user-view">
             <div class="background">
-              <img src="https://uangteman.com/blog/wp-content/uploads/2017/08/sejarah-bank-Indonesia.jpg">
+              <img src="https://media.licdn.com/media/p/6/005/0a7/1ff/1bb7dc3.png">
             </div>
-            <a href="#"><img class="circle" src="https://www.sonypark360.net/wp-content/uploads/2017/08/profile-pictures.png" alt=""></a>
+            <a href="#"><img class="circle" alt=""></a>
             <span class="white-text name">Anu</span>
             <span class="white-text email">anu@mail.com</span>
           </div>
@@ -49,72 +47,144 @@
         <li><a onclick="dash()"><i class="material-icons">apps</i>Dashboard</a></li>
         <li><a onclick="pem()"><i class="material-icons">attachment</i>Pemasukan</a></li>
         <li><a onclick="peng()"><i class="material-icons">backspace</i>Pengeluaran</a></li>
+        <li><a onclick="hut()"><i class="material-icons">priority_high</i>Hutang</a></li>
+        <li><a onclick="logOut()"><i class="material-icons">power_settings_new</i>Logout</a></li>
       </ul>
     </div>
   </nav>
 
   <div class="container">
+    <br>
+
+    <div class="" id="login">
+      <div class="row">
+        <div class="col s12 m6">
+          <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+              <span class="card-title">Uang</span>
+              <p>
+                Uang dalam ilmu ekonomi tradisional didefinisikan sebagai setiap alat tukar yang dapat diterima secara umum. Alat tukar itu dapat berupa benda apapun yang dapat diterima oleh setiap orang di masyarakat dalam proses pertukaran barang dan jasa.
+              </p>
+            </div>
+            <div class="card-action">
+              <a target="popup" onclick="window.open('https://id.wikipedia.org/wiki/Uang','fb','width=100%,height=auto')">Baca</a>
+              <a href="#">Video</a>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m6">
+          <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+              <span class="card-title">Manajemen</span>
+              <p>
+                Manajemen adalah seni menyelesaikan pekerjaan melalui orang lain. Definisi Mary Parker Follet ini berarti bahwa seorang manajer bertugas mengatur dan mengarahkan orang lain untuk mencapai tujuan organisasi.
+              </p>
+            </div>
+            <div class="card-action">
+              <a target="popup" onclick="window.open('https://id.wikipedia.org/wiki/Manajemen','fb','width=100%,height=auto')">Baca</a>
+              <a href="#">Video</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 m12">
+          <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+              <span class="card-title">Cara memanajemen uang sendiri</span>
+              <p>
+                Caranya mudah, kamu tinggal mempunyai catatan tentang pemasukan dan pengeluaran uang kamu, jadi kamu bisa mengira-ngira apa yang sekiranya harus kamu kurangi pengeluaran-nya.
+              </p>
+            </div>
+            <div class="card-action">
+              <span class="white-text">Masuk dengan </span>
+              <button class="btn btn-sm blue darken-3" onclick="logIn()">facebook
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- dashboar -->
-    <div class="" id="dashboard">
+    <div class="hidden" id="dashboard">
       <div class="card-panel">
-        <h5 class="blue-text text-darken-2" onclick="pem()">Pemasukan kamu Rp. 1000000</h5>
+        <h5 class="blue-text text-darken-2" onclick="pem()">
+          <span class="pemasukan">Pemasukan kamu Rp. 0</span>
+        </h5>
       </div>
       <div class="card-panel">
-        <h5 class="blue-text text-darken-2" onclick="peng()">Pengeluaran kamu Rp. 900000</h5>
+        <h5 class="blue-text text-darken-2" onclick="peng()">
+          <span class="pengeluaran">Pengeluaran kamu Rp. 0</span>
+        </h5>
       </div>
       <div class="card-panel">
-        <h5 class="blue-text text-darken-2">Sisa Rp. 100000</h5>
+        <h5 class="blue-text text-darken-2" onclick="hut()">
+          <span class="hutang">Hutang kamu Rp. 0</span>
+        </h5>
       </div>
     </div>
     <!-- end dashboard -->
     <!-- pemasukan -->
     <div class="hidden" id="pemasukan">
-      <div class="row">
+      <div class="row" id="pemTabs">
         <div class="col s12">
-          <ul class="tabs">
-            <li class="tab col s6 "><a class="blue-text text-darken-2" href="#pem-form">Form</a></li>
-            <li class="tab col s6"><a class="blue-text text-darken-2" href="#pem-table">Table</a></li>
-          </ul>
+          <a class="btn-floating btn-small waves-effect waves-light green-darken1"><i class="material-icons">add</i></a> Tambah
         </div>
       </div>
-      <div class="row" id="pem-form">
+      <div class="row hidden" id="pem-form">
         <div class="col s12">
-          <div class="card-panel blue">
-            <span class="white-text">Pemasukan yang kamu punya</span>
+          <div class="card-panel green darken-1">
+            <span class="white-text">Catat pemasukan kamu</span>
           </div>
         </div>
-        <form class="col s12" method="post">
+        <div class="col s12">
           <div class="row">
             <div class="input-field col s12">
-              <input class="validate" type="number" id="pem-nominal" name="" required>
+              <input class="validate" type="number" name="pem-nominal" placeholder="Nominal">
               <label for="pem-nominal">Nominal Pemasukan</label>
             </div>
           </div>
           <div class="row">
             <div class="input-field col s12">
-              <input class="validate" type="text" id="pem-sumber" name="" required>
-              <label for="pem-nominal">Sumber Pemasukan</label>
+              <input class="validate" type="text" name="pem-sumber" placeholder="Sumber">
+              <label for="pem-sumber">Sumber Pemasukan</label>
             </div>
           </div>
+          <input type="hidden" name="pem-id" value="">
+          <input type="hidden" name="pem-tgl" value="">
+          <input type="hidden" name="pem-bln" value="">
+          <input type="hidden" name="pem-th" value="">
+          <input type="hidden" name="pem-jam" value="">
           <div class="row">
-            <button class="btn btn-sm blue " type="submit" name="action">Simpan
+            <button class="btn btn-sm red darken-1 " name="batal">Batal
+              <i class="material-icons right">cancel</i>
+            </button>
+            <button class="btn btn-sm green darken-1 " name="pem-simpan">Simpan
               <i class="material-icons right">send</i>
             </button>
           </div>
-        </form>
+        </div>
       </div>
       <div class="row" id="pem-table">
         <table>
           <thead>
             <td>No</td>
-            <td>Sumber</td>
             <td>Nominal</td>
-            <td>Tanggal</td>
+            <td>Sumber</td>
+            <td>Dibuat</td>
+            <td>Diperbarui</td>
             <td>####</td>
           </thead>
           <tbody id="pem-isi">
           </tbody>
         </table>
+        <br>
+        <div class="col s12">
+          <div class="center-align">
+            <button type="button" class="btn btn-xs red darken-2 kurang">kurang</button>
+            <button type="button" class="btn btn-xs green darken-2 lebih">lebih</button>
+          </div>
+        </div>
       </div>
     </div>
     <!-- end pemasukan -->
@@ -122,53 +192,126 @@
     <div class="hidden" id="pengeluaran">
       <div class="row">
         <div class="col s12">
-          <ul class="tabs">
-            <li class="tab col s6 "><a class="blue-text text-darken-2" href="#peng-form">Form</a></li>
-            <li class="tab col s6"><a class="blue-text text-darken-2" href="#peng-table">Table</a></li>
-          </ul>
+          <a class="btn-floating btn-small waves-effect waves-light green-darken1"><i class="material-icons">add</i></a> Tambah
         </div>
       </div>
-      <div class="row" id="peng-form">
+      <div class="row hidden" id="peng-form">
         <div class="col s12">
-          <div class="card-panel blue">
-            <span class="white-text">Pengeluaran </span>
+          <div class="card-panel green darken-1">
+            <span class="white-text">Catat pengeluaran kamu </span>
           </div>
         </div>
-        <form class="col s12" method="post">
+        <div class="col s12">
           <div class="row">
             <div class="input-field col s12">
-              <input class="validate" type="number" id="peng-nominal" name="" required>
+              <input class="validate" type="number" name="peng-nominal" placeholder="Nominal">
               <label for="pem-nominal">Nominal Pengeluaran</label>
             </div>
           </div>
           <div class="row">
             <div class="input-field col s12">
-              <input class="validate" type="text" id="peng-perlu" name="" required>
-              <label for="pem-nominal">Keperluan</label>
+              <input class="validate" type="text" name="peng-keperluan" placeholder="Keperluan">
+              <label for="pem-sumber">Keperluan</label>
             </div>
           </div>
+          <input type="hidden" name="peng-id" value="">
+          <input type="hidden" name="peng-tgl" value="">
+          <input type="hidden" name="peng-bln" value="">
+          <input type="hidden" name="peng-th" value="">
+          <input type="hidden" name="peng-jam" value="">
           <div class="row">
-            <button class="btn btn-sm blue " type="submit" name="action">Simpan
+            <button class="btn btn-sm red darken-1 " name="batal">Batal
+              <i class="material-icons right">cancel</i>
+            </button>
+            <button class="btn btn-sm green darken-1 " name="peng-simpan">Simpan
               <i class="material-icons right">send</i>
             </button>
           </div>
-        </form>
+        </div>
       </div>
       <div class="row" id="peng-table">
         <table>
           <thead>
             <td>No</td>
+            <td>Nominal</td>
             <td>Keperluan</td>
-            <td>Nominal (Total)</td>
-            <td>Tanggal</td>
+            <td>Dibuat</td>
+            <td>Diperbarui</td>
             <td>####</td>
           </thead>
           <tbody id="peng-isi">
           </tbody>
         </table>
+        <br>
+        <div class="col s12">
+          <div class="center-align">
+            <button type="button" class="btn btn-xs red darken-2 kurang">kurang</button>
+            <button type="button" class="btn btn-xs green darken-2 lebih">lebih</button>
+          </div>
+        </div>
       </div>
     </div>
     <!-- end pengeluaran -->
+    <!-- hutang -->
+    <div class="hidden" id="hutang">
+      <div class="row">
+        <div class="col s12">
+          <a class="btn-floating btn-small waves-effect waves-light green-darken1"><i class="material-icons">add</i></a> Tambah
+        </div>
+      </div>
+      <div class="row hidden" id="hut-form">
+        <div class="col s12">
+          <div class="card-panel green darken-1">
+            <span class="white-text">Catat Hutang kamu </span>
+          </div>
+        </div>
+        <div class="col s12">
+          <div class="row">
+            <div class="input-field col s12">
+              <input class="validate" type="number" name="hut-nominal" placeholder="Nominal">
+              <label for="pem-nominal">Nominal </label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              <input class="validate" type="text" name="hut-dari" placeholder="Dari siapa?">
+              <label for="pem-sumber">Dari</label>
+            </div>
+          </div>
+          <input type="hidden" name="hut-id" value="">
+          <div class="row">
+            <button class="btn btn-sm red darken-1 " name="batal">Batal
+              <i class="material-icons right">cancel</i>
+            </button>
+            <button class="btn btn-sm green darken-1 " name="hut-simpan">Simpan
+              <i class="material-icons right">send</i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row" id="hut-table">
+        <table>
+          <thead>
+            <td>No</td>
+            <td>Nominal</td>
+            <td>Dari</td>
+            <td>Lunas</td>
+            <td>Dilunasi</td>
+            <td>####</td>
+          </thead>
+          <tbody id="hut-isi">
+          </tbody>
+        </table>
+        <br>
+        <div class="col s12">
+          <div class="center-align">
+            <button type="button" class="btn btn-xs red darken-2 kurang">kurang</button>
+            <button type="button" class="btn btn-xs green darken-2 lebih">lebih</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end hutang -->
   </div>
 
 </body>

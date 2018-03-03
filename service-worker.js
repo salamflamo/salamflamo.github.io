@@ -3,32 +3,32 @@ var cacheName = 'Money-Management';
 var filesToCache = [
   '/',
   '/index.html',
-  '/scripts/crud.js',
-  '/scripts/style.js',
-  '/scripts/jquery-3.2.1.min.js',
-  '/scripts/materialize.min.js',
-  '/scripts/style.js',
-  '/styles/materialize.min.css',
-  '/styles/style.css'
+  '/script/beauty.js',
+  '/script/app.js',
+  '/script/jquery-3.2.1.min.js',
+  '/script/materialize.min.js',
+  '/script/style.js',
+  '/style/materialize.min.css',
+  '/style/style.css'
 ];
 
 self.addEventListener('install', function(e) {
-  console.log("[serviceWorker] install");
+  // console.log("[serviceWorker] install");
   e.waitUntil(
     caches.open(cacheName).then(function(cache) {
-      console.log("[serviceWorker] caching app shell");
+      // console.log("[serviceWorker] caching app shell");
       return cache.addAll(filesToCache);
     })
   );
 });
 
 self.addEventListener('activate', function(e) {
-  console.log("[serviceWorker] activate");
+  // console.log("[serviceWorker] activate");
   e.waitUntil(
     caches.keys().then(function(keyList) {
       return Promise.all(keyList.map(function(key) {
         if (key !== cacheName && key !== dataCacheName) {
-          console.log("[serviceWorker] removing old cache", key);
+          // console.log("[serviceWorker] removing old cache", key);
           return caches.delete(key);
         }
       }));
@@ -38,7 +38,7 @@ self.addEventListener('activate', function(e) {
 });
 
 self.addEventListener('fetch', function(e) {
-  console.log("[serviceWorker] fetch", e.request.url);
+  // console.log("[serviceWorker] fetch", e.request.url);
   var dataUrl = self.location.origin;
   if (e.request.url.indexOf(dataUrl) > -1) {
     e.respondWith(

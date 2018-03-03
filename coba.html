@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <script type="text/javascript" src="script/jquery-3.2.1.min.js"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <title>Coba FBDB</title>
+  <style media="screen">
+    .center {
+      top: 50%;
+      left: 50%;
+    }
+  </style>
+
+  <script src="https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyBphdc7pLzGlSAMr7Zi7da4ohwUHmfg1cw",
+      authDomain: "mon-man.firebaseapp.com",
+      databaseURL: "https://mon-man.firebaseio.com",
+      projectId: "mon-man",
+      storageBucket: "mon-man.appspot.com",
+      messagingSenderId: "285185888584"
+    };
+    firebase.initializeApp(config);
+  </script>
+</head>
+
+<body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbarr" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand">FBDB</a>
+      </div>
+      <div class="collapse navbar-collapse" id="navbarr">
+        <ul class="nav navbar-nav">
+          <li><a href="#">Insert</a></li>
+          <li><a href="#">Table</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3">
+        <h4 class="heading">Contoh FBDB</h4>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-horizontal" action="index.html" method="post">
+          <div class="form-group">
+            <label class="col-md-2 control-label">id</label>
+            <div class="col-md-3">
+              <input type="text" name="id" class="form-control" disabled>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2 control-label">username</label>
+            <div class="col-md-3">
+              <input type="text" name="username" class="form-control" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2 control-label">password</label>
+            <div class="col-md-3">
+              <input type="password" name="password" class="form-control" required>
+            </div>
+          </div>
+          <div class="form-actions">
+            <div class="col-lg-3">
+              <div class="pull-right">
+                <div class="button-group">
+                  <button type="button" name="simpan" class="btn btn-success">save</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br><br>
+    <div class="row">
+      <div class="col-md-10">
+        <table class="table table-hover">
+          <thead>
+            <th>Id</th>
+            <th>Username</th>
+            <th>###</th>
+          </thead>
+          <tbody id="tbl-isi">
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+<script type="text/javascript">
+  var fireRef = firebase.database().ref("pengguna/");
+  var isupdate;
+  reload();
+  $(document).ready(function() {
+    $('button[name=simpan]').click(function() {
+      if (isupdate) {
+        var data = {
+          id: $('input[name=id]').val(),
+          username: $('input[name=username]').val(),
+          password: $('input[name=password]').val()
+        };
+        var updates = {};
+        updates['/pengguna/' + $('input[name=id]').val()] = data;
+        firebase.database().ref().update(updates);
+        alert("berhasil perbarui");
+        reload();
+        isupdate = false;
+      } else {
+        var uid = firebase.database().ref().child("pengguna").push().key;
+        var data = {
+          id: uid,
+          username: $('input[name=username]').val(),
+          password: $('input[name=password]').val()
+        };
+        var updates = {};
+        updates['/pengguna/' + uid] = data;
+        firebase.database().ref().update(updates);
+        alert("berhasil simpan");
+        reload();
+      }
+    });
+
+  });
+  ///fungsi-fungsi
+  var globalID = new Array();
+  var globalData = new Array();
+  var allData = [];
+
+  function reload() {
+    var html;
+    var allId = new Array();
+    allId = [];
+    $('input').val("");
+    var i = 0;
+    fireRef.once('value', function(snapshot) {
+      snapshot.forEach(function(childSnapshot) {
+        var childKey = childSnapshot.key;
+        var childData = childSnapshot.val();
+        allId[i] = childKey;
+        allData[i] = {
+          "id": childData.id,
+          "username": childData.username
+        };
+        html += '<tr>' +
+          '<td>' + childData.id + '</td>' +
+          '<td>' + childData.username + '</td>' +
+          '<td>' +
+          '<div class="button-group">' +
+          '<button type="button" class="btn btn-sm btn-default"' +
+          'onclick="perbarui(' + i + ')" >' +
+          '<i class="fa fa-edit"></i>' +
+          '</button>' +
+          '<button type="button" class="btn btn-sm btn-danger"  ' +
+          ' onclick="hapus(' + i + ')">' +
+          '<i class="fa fa-trash"></i>' +
+          '</button>' +
+          '</div>' +
+          '</td>' +
+          '</tr>';
+        i++;
+      });
+      $('#tbl-isi').html(html);
+    }).then(function() {
+      globalID = [];
+      globalID = allId;
+    });
+  }
+
+  function perbarui(i) {
+    isupdate = true;
+    $('input[name=id]').val(allData[i].id);
+    $('input[name=username]').val(allData[i].username);
+  }
+
+  function hapus(i) {
+    var hapus = confirm("hapus?");
+    if (hapus) {
+      firebase.database().ref().child("/pengguna/" + globalID[i]).remove();
+    }
+    reload();
+  }
+</script>
+
+</html>
